@@ -237,6 +237,7 @@ public class Player implements spy.sim.Player {
 
     public List<Record> sendRecords(int id)
     {
+        System.out.println(id + " is sending records");
         communicating = true;
         List<Record> send = new ArrayList<Record>();
         for(List<Record> l :  trustRecords.values()){
@@ -258,6 +259,7 @@ public class Player implements spy.sim.Player {
 
     public void receiveRecords(int id, List<Record> records)
     {
+        System.out.println(id + " is receiving records");
         if(!receiveRecord){
             for(Record r: records){
                 if(!trustRecords.containsKey(r.getLoc())){
@@ -443,7 +445,7 @@ public class Player implements spy.sim.Player {
             System.out.println("there are nearby soldiers!");
             int smallest_id = Integer.MAX_VALUE;
             for (int otherSoldierId : soldierIds) {
-                System.out.println("soldiers seen: " + otherSoldierId);
+                System.out.println("soldiers seen: " + otherSoldierId + " by " + this.id);
                 if (otherSoldierId < smallest_id) {
                     smallest_id = otherSoldierId;
                 }
@@ -681,8 +683,11 @@ public class Player implements spy.sim.Player {
             loc = new Point(loc.x + move.x, loc.y + move.y);
 
             if (package_found && target_found) {
-            // move towards package
-                if (package_loc.x > loc.x && package_loc.y > loc.y) {
+                System.out.println("both found");
+                // if already at package, don't move
+                if (loc.x == package_loc.x && loc.y == package_loc.y) {
+                    return new Point(0,0);
+                } else if (package_loc.x > loc.x && package_loc.y > loc.y) {
                     move = new Point(1,1);
                 } else if (package_loc.x < loc.x && package_loc.y < loc.y) {
                     move = new Point(-1,-1);
@@ -695,19 +700,19 @@ public class Player implements spy.sim.Player {
                 } else if (package_loc.y > loc.y) {
                     move = new Point(1,0);
                 }
-                loc = new Point(loc.x + move.x, loc.y + move.y);
+                loc = new Point(loc.x + move.x, loc.y + move.y);    
             }
 
             else if (package_found || target_found) {
-                // System.out.println("something found");
+                System.out.println("something found");
                 // only move to non-muddy cells
-                while (mudCells.contains(loc)) {
-                    Random rand = new Random();
-                    int x = rand.nextInt(2) * 2 - 1;
-                    int y = rand.nextInt(2 + Math.abs(x)) * (2 - Math.abs(x)) - 1;
-                    move = new Point(x, y);
-                    loc = new Point(loc.x + move.x, loc.y + move.y);
-                }
+                // while (mudCells.contains(loc)) {
+                //     Random rand = new Random();
+                //     int x = rand.nextInt(2) * 2 - 1;
+                //     int y = rand.nextInt(2 + Math.abs(x)) * (2 - Math.abs(x)) - 1;
+                //     move = new Point(x, y);
+                //     loc = new Point(loc.x + move.x, loc.y + move.y);
+                // }
             } 
         }
         
